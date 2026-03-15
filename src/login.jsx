@@ -1,18 +1,50 @@
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import MaziaLogo from './assets/image.png';
 
 
 export default function Login() {
-    const navigate = useNavigate();
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault(); 
+
         const form = e.target;
-        if (form.checkValidity()) {
-            localStorage.setItem("auth", "true");
-            navigate("/dashboard");
+        const email = form.email.value;
+        const password = form.password.value;
+        
+        try {
+            const response = await fetch('https://api.voixup.fr/auth/login', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    "accept": "application/json"
+                },
+                body: JSON.stringify({   
+                        email: email, 
+                        password: password
+                    }),
+            });
+
+            if (!response.ok) {
+                throw new Error("Invalid credentials");
+            }
+            
+            const data = await response.json();
+
+            console.log(data)
+            
+            localStorage.setItem("token", data.access_token);
+            localStorage.setItem("role", data.role);
+
+            if (data.role === "admin") {
+                window.location.href = "https://system-dashboard-lilac.vercel.app/";
+            } else {
+                window.location.href = "https://user-dashboard-virid-mu.vercel.app/";
+            }
+        } catch (error) {
+            console.error(error);
+            alert("Login failed: Invalid email or password");
         }
-};
+        };
 
     return(
         <div className='min-h-screen relative flex flex-col items-center justify-center'>
@@ -35,6 +67,7 @@ export default function Login() {
                             <label htmlFor="email">Email</label>
                             <input 
                             type="email" 
+                            name="email"
                             placeholder='Entrez votre email'
                             className='h-10 px-3 py-2 rounded-md w-full border border-gray-300 bg-white 
                             placeholder:text-gray-500 text-sm text-gray-900
@@ -45,6 +78,7 @@ export default function Login() {
                             <label htmlFor="password">Mot de passe</label>
                             <input 
                             type="password" 
+                            name="password"
                             placeholder='Entrez votre mot de passe'
                             className='h-10 px-3 py-2 rounded-md w-full border border-gray-300 bg-white 
                             placeholder:text-gray-500 text-sm text-gray-900
