@@ -1,11 +1,15 @@
 import { Link } from "react-router-dom";
 import MaziaLogo from './assets/image.png';
+import { useState } from "react";
 
 
 export default function Login() {
 
+    const [error, setError] = useState(null);
+
     const handleSubmit = async (e) => {
         e.preventDefault(); 
+        setError(null)
 
         const form = e.target;
         const email = form.email.value;
@@ -24,8 +28,15 @@ export default function Login() {
                     }),
             });
 
+            if (response.status === 401) {
+                setError("Adresse e-mail ou mot de passe incorrect. Veuillez réessayer.");
+                form.password.value = ""
+                return;
+            }
+
             if (!response.ok) {
-                throw new Error("Invalid credentials");
+                setError("Une erreur est survenue. Veuillez réessayer plus tard.");
+                return;
             }
             
             const data = await response.json();
@@ -35,6 +46,8 @@ export default function Login() {
             localStorage.setItem("token", data.access_token);
             localStorage.setItem("role", data.role);
 
+            form.reset();
+
             if (data.role === "admin") {
                 window.location.href = "https://system-dashboard-lilac.vercel.app/";
             } else {
@@ -42,7 +55,8 @@ export default function Login() {
             }
         } catch (error) {
             console.error(error);
-            alert("Login failed: Invalid email or password");
+            setError("Impossible de se connecter au serveur. Veuillez réessayer.")
+            return;
         }
         };
 
@@ -61,6 +75,11 @@ export default function Login() {
                         Connectez-vous à Mazia pour accéder à votre espace.
                     </div>
                 </div>
+                {error && (
+                    <div className="text-red-500 text-sm text-center">
+                        {error}
+                    </div>
+                )}
                 <div className="mt-4">
                     <form onSubmit={handleSubmit} className="space-y-4">
                         <div className='flex flex-col space-y-1'>
@@ -79,6 +98,7 @@ export default function Login() {
                             <input 
                             type="password" 
                             name="password"
+                            onChange={() => setError(null)}
                             placeholder='Entrez votre mot de passe'
                             className='h-10 px-3 py-2 rounded-md w-full border border-gray-300 bg-white 
                             placeholder:text-gray-500 text-sm text-gray-900
@@ -107,4 +127,4 @@ export default function Login() {
             </div>
         </div>
     )
-}
+} 
