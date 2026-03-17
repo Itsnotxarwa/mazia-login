@@ -49,9 +49,9 @@ export default function Login() {
             form.reset();
 
             if (data.role === "admin") {
-                window.location.href = "https://system-dashboard-lilac.vercel.app/";
+                window.location.href = `https://system-dashboard-lilac.vercel.app/?token=${data.access_token}&role=${data.role}&userId=${data.user_id}`;
             } else {
-                window.location.href = "https://user-dashboard-virid-mu.vercel.app/";
+                window.location.href = `https://user-dashboard-virid-mu.vercel.app/?token=${data.access_token}&role=${data.role}&userId=${data.user_id}`;
             }
         } catch (error) {
             console.error(error);
