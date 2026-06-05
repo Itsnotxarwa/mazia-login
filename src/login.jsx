@@ -49,9 +49,9 @@ export default function Login() {
             form.reset();
 
             if (data.role === "admin") {
-                window.location.href = `https://admin.mazia.ai/?token=${data.access_token}&role=${data.role}&userId=${data.user_id}`;
+                window.location.href = `http://admin.mazia.ai/?token=${data.access_token}&role=${data.role}&userId=${data.user_id}`;
             } else {
-                window.location.href = `https://app.mazia.ai//?token=${data.access_token}&role=${data.role}&userId=${data.user_id}`;
+                window.location.href = `http://app.mazia.ai//?token=${data.access_token}&role=${data.role}&userId=${data.user_id}`;
             }
         } catch (error) {
             console.error(error);
