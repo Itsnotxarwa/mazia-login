@@ -18,6 +18,7 @@ export default function Login() {
         try {
             const response = await fetch('https://api.voixup.fr/auth/login', {
                 method: 'POST',
+                credentials: "include",
                 headers: {
                     'Content-Type': 'application/json',
                     "accept": "application/json"
@@ -40,18 +41,14 @@ export default function Login() {
             }
             
             const data = await response.json();
-
-            console.log(data)
             
-            localStorage.setItem("token", data.access_token);
-            localStorage.setItem("role", data.role);
 
             form.reset();
 
             if (data.role === "admin") {
-                window.location.href = `http://admin.mazia.ai/?token=${data.access_token}&role=${data.role}&userId=${data.user_id}`;
+                window.location.href = `http://admin.mazia.ai`;
             } else {
-                window.location.href = `http://app.mazia.ai//?token=${data.access_token}&role=${data.role}&userId=${data.user_id}`;
+                window.location.href = `http://app.mazia.ai`;
             }
         } catch (error) {
             console.error(error);
