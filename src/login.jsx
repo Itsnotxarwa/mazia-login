@@ -16,7 +16,7 @@ export default function Login() {
         const password = form.password.value;
         
         try {
-            const response = await fetch('https://api.voixup.fr/auth/login', {
+            const response = await fetch('https://api.mazia.ai/auth/login', {
                 method: 'POST',
                 credentials: "include",
                 headers: {
