@@ -41,7 +41,7 @@ export default function Login() {
             }
             
             const data = await response.json();
-            
+            localStorage.setItem('token', data.access_token);
 
             form.reset();
 
